@@ -1,3 +1,6 @@
 ### Trash Files
 __pycache__
 _.DS_Store
+
+### 기록용 파일
+.기록용.md

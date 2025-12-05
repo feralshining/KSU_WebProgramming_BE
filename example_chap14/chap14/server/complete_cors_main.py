@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI
 from app.api.v1.routers import api_router
 from pydantic import BaseModel
 
@@ -15,7 +15,7 @@ class LoginRequest(BaseModel):
     id: str
     password: str
    
-member = {}
+member = {'admin': {'password': 'admin123', 'email': 'admin@example.com'}}
 
 app = FastAPI()
 
@@ -45,12 +45,9 @@ def register_user(user: User):
     id = user.id
     password = user.password
     email = user.email 
-    
-    print(id, "|n", password, "|n", email)
 
     if id in member:
-        raise HTTPException(status_code=400, detail="이미 존재하는 아이디입니다.") 
-        # FE로 status_code : detail의 형태로 json 객체 response를 보냅니다.
+        return {"error": "이미 존재하는 아이디입니다."}
     
     member[id] = {"password": password, "email": email}
     print(member)
@@ -63,10 +60,10 @@ def login_user(login: LoginRequest):
     password = login.password
 
     if id not in member:
-        raise HTTPException(status_code=400, detail="존재하지 않는 아이디입니다.")
+        return {"error": "존재하지 않는 아이디입니다."}
     
     if member[id]['password'] != password:
-        raise HTTPException(status_code=400, detail="비밀번호가 틀렸습니다.")
+        return {"error": "비밀번호가 틀렸습니다."}
     
     return {"message": "로그인 성공"}
 
